@@ -11,11 +11,13 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.hossein.taskmanager.AddEditActivity;
 import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Task;
+import com.example.hossein.taskmanager.model.TaskDataBase;
 
 import java.util.ArrayList;
 
@@ -24,6 +26,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public abstract class TaskList extends Fragment {
 
     private RecyclerView mRecyclerView ;
+    private LinearLayout mLinearLayout;
 
     @Nullable
     @Override
@@ -32,6 +35,8 @@ public abstract class TaskList extends Fragment {
 
         View view = inflater.inflate(getLayout() , container , false);
         mRecyclerView = view.findViewById(R.id.all_task_recycler_view);
+        mLinearLayout = view.findViewById(R.id.no_task_view);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
 
@@ -48,6 +53,11 @@ public abstract class TaskList extends Fragment {
         ArrayList<Task> taskArrayList = getTaskArrayList();
         TaskAdapter taskAdapter = new TaskAdapter(taskArrayList);
         mRecyclerView.setAdapter(taskAdapter);
+        if(getTaskArrayList().size() == 0){
+            mLinearLayout.setVisibility(View.VISIBLE);
+        }else {
+            mLinearLayout.setVisibility(View.GONE);
+        }
     }
 
     public abstract ArrayList<Task> getTaskArrayList();

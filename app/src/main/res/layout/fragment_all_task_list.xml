@@ -18,5 +18,41 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/no_task_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/all_task_recycler_view"
+        app:layout_constraintEnd_toEndOf="@+id/all_task_recycler_view"
+        app:layout_constraintStart_toStartOf="@+id/all_task_recycler_view"
+        app:layout_constraintTop_toTopOf="@+id/all_task_recycler_view">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/task_list"
+            app:layout_constraintBottom_toBottomOf="@+id/all_task_recycler_view"
+            app:layout_constraintEnd_toEndOf="@+id/all_task_recycler_view"
+            app:layout_constraintStart_toStartOf="@+id/all_task_recycler_view"
+            app:layout_constraintTop_toTopOf="@+id/all_task_recycler_view" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="You don't Have any Task"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
