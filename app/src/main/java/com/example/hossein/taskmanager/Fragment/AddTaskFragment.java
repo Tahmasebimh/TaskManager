@@ -109,12 +109,13 @@ public class AddTaskFragment extends Fragment {
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Task task = TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid"));
-                TaskDataBase.remvoe(task);
-                getActivity().finish();
+          //      Task task = TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid"));
+          //      TaskDataBase.remove(task);
+          //      getActivity().finish();
+                AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid")));
+                alertDialogFragment.show(getFragmentManager() , "dialog");
             }
         });
-
         return view;
     }
 

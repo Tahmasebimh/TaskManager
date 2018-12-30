@@ -1,9 +1,10 @@
 package com.example.hossein.taskmanager.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Task {
+public class Task implements Serializable {
 
     private String title , date , descryption ;
     private boolean done = false ;

@@ -14,7 +14,7 @@ public class TaskDataBase {
         mTasks.add(task);
     }
 
-    public static void remvoe(Task task){
+    public static void remove(Task task){
         mTasks.remove(task);
     }
 
