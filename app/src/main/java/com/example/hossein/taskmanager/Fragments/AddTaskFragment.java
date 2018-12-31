@@ -1,7 +1,10 @@
-package com.example.hossein.taskmanager.Fragment;
+package com.example.hossein.taskmanager.Fragments;
 
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -47,7 +51,7 @@ public class AddTaskFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -74,6 +78,7 @@ public class AddTaskFragment extends Fragment {
             mButtonSave.setVisibility(View.VISIBLE);
         }
         mButtonSave.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
                 if (!bundle.getBoolean("edited") || bundle == null) {
@@ -86,7 +91,7 @@ public class AddTaskFragment extends Fragment {
                         task.setEdited(true);
                         task.setTitle(mEditTextTitle.getText().toString());
                         mTaskLab.add(task);
-                        getActivity().finish();
+                        Objects.requireNonNull(getActivity()).finish();
                     }
                 }
             }
@@ -112,10 +117,10 @@ public class AddTaskFragment extends Fragment {
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          //      Task task = TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid"));
-          //      TaskDataBase.remove(task);
-          //      getActivity().finish();
-                AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid")));
+
+                AlertDialogFragment alertDialogFragment = AlertDialogFragment
+                        .newInstance(mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid")));
+
                 alertDialogFragment.show(getFragmentManager() , "dialog");
             }
         });

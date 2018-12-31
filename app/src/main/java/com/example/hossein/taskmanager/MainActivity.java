@@ -11,9 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.hossein.taskmanager.Fragment.AllTaskListFragment;
-import com.example.hossein.taskmanager.Fragment.DoneTaskFragment;
-import com.example.hossein.taskmanager.Fragment.UndoneTaskFragment;
+import com.example.hossein.taskmanager.Fragments.AllTaskListFragment;
+import com.example.hossein.taskmanager.Fragments.DoneTaskFragment;
+import com.example.hossein.taskmanager.Fragments.UndoneTaskFragment;
 
 public class MainActivity extends AppCompatActivity {
 

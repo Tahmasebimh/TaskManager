@@ -1,4 +1,4 @@
-package com.example.hossein.taskmanager.Fragment;
+package com.example.hossein.taskmanager.Fragments;
 
 
 import android.support.v4.app.Fragment;
@@ -13,13 +13,13 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DoneTaskFragment extends TaskList {
+public class AllTaskListFragment extends SingleFragmentActivity {
 
 
     @Override
     public ArrayList<Task> getTaskArrayList() {
         TaskLab taskLab = TaskLab.getInstance();
-        return taskLab.getDoneTaskList();
+        return taskLab.getTasks();
     }
 
     @Override

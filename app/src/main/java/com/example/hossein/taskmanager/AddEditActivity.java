@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import com.example.hossein.taskmanager.Fragment.AddTaskFragment;
+import com.example.hossein.taskmanager.Fragments.AddTaskFragment;
 
 import java.util.UUID;
 

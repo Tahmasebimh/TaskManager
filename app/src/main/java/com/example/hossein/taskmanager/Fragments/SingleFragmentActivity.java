@@ -1,4 +1,4 @@
-package com.example.hossein.taskmanager.Fragment;
+package com.example.hossein.taskmanager.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public abstract class TaskList extends Fragment {
+public abstract class SingleFragmentActivity extends Fragment {
 
     private RecyclerView mRecyclerView ;
     private LinearLayout mLinearLayout;
@@ -103,8 +103,7 @@ public abstract class TaskList extends Fragment {
 
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.model_task_recycler_view , viewGroup , false);
-            TaskViewHolder taskViewHolder = new TaskViewHolder(view);
-            return taskViewHolder;
+            return new TaskViewHolder(view);
 
         }
 
