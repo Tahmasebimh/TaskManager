@@ -7,14 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.hossein.taskmanager.model.Task;
-import com.example.hossein.taskmanager.model.TaskDataBase;
-
+import com.example.hossein.taskmanager.model.TaskLab;
 public class AlertDialogFragment extends DialogFragment {
+
+    private TaskLab mTaskLab;
 
     public static AlertDialogFragment newInstance(Task task) {
         
@@ -29,9 +27,10 @@ public class AlertDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        mTaskLab = TaskLab.getInstance();
 
         final Task task = (Task) getArguments().getSerializable("task");
-        String text = "This text is white. <font color=\"#E72A02\">This text is blue.</font>";
+
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Really want to delete " + task.getTitle()
@@ -39,8 +38,8 @@ public class AlertDialogFragment extends DialogFragment {
                 .setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Toast.makeText(getActivity(), "ok clicked", Toast.LENGTH_SHORT).show();
-                                TaskDataBase.remove(task);
+                                Toast.makeText(getActivity(), task.getTitle() + " Removed", Toast.LENGTH_SHORT).show();
+                                mTaskLab.remove(task);
                                 getActivity().finish();
                             }
                         }

@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Task;
-import com.example.hossein.taskmanager.model.TaskDataBase;
+import com.example.hossein.taskmanager.model.TaskLab;
 
 import java.util.UUID;
 
@@ -29,6 +29,7 @@ public class AddTaskFragment extends Fragment {
     private CheckBox mCheckBoxIsDone;
     private Bundle bundle;
     private Button mButtonEdit , mButtonDelete;
+    private  TaskLab mTaskLab;
 
     public AddTaskFragment() {
         // Required empty public constructor
@@ -50,6 +51,7 @@ public class AddTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        mTaskLab = TaskLab.getInstance();
         View view = inflater.inflate(R.layout.fragment_add_task, container, false);
         identifyItem(view);
         bundle = getArguments();
@@ -58,7 +60,8 @@ public class AddTaskFragment extends Fragment {
                 mButtonDelete.setVisibility(View.VISIBLE);
                 mButtonEdit.setVisibility(View.VISIBLE);
                 mButtonSave.setVisibility(View.GONE);
-                Task task = TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid"));
+
+                Task task = mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid"));
                 mEditTextTitle.setText(task.getTitle());
                 mCheckBoxIsDone.setChecked(task.isDone());
                 mEditTextDesc.setText(task.getDescryption());
@@ -82,7 +85,7 @@ public class AddTaskFragment extends Fragment {
                         task.setDescryption(mEditTextDesc.getText().toString());
                         task.setEdited(true);
                         task.setTitle(mEditTextTitle.getText().toString());
-                        TaskDataBase.add(task);
+                        mTaskLab.add(task);
                         getActivity().finish();
                     }
                 }
@@ -100,7 +103,7 @@ public class AddTaskFragment extends Fragment {
                     task.setDescryption(mEditTextDesc.getText().toString());
                     task.setEdited(true);
                     task.setTitle(mEditTextTitle.getText().toString());
-                    TaskDataBase.replaceTask(task, (UUID) bundle.getSerializable("uuid"));
+                    mTaskLab.replaceTask(task, (UUID) bundle.getSerializable("uuid"));
                     getActivity().finish();
                 }
             }
@@ -112,7 +115,7 @@ public class AddTaskFragment extends Fragment {
           //      Task task = TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid"));
           //      TaskDataBase.remove(task);
           //      getActivity().finish();
-                AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(TaskDataBase.findWithUUID((UUID) bundle.getSerializable("uuid")));
+                AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid")));
                 alertDialogFragment.show(getFragmentManager() , "dialog");
             }
         });
