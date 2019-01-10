@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.SignInFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/tv_username_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="USER NAME"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.405" />
+
+    <EditText
+        android:id="@+id/edt_password_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="PASSWORD"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_password_signin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_username_signin"
+        app:layout_constraintTop_toTopOf="@+id/tv_password_signin" />
+
+    <EditText
+        android:id="@+id/edt_username_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="USER NAME"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_username_signin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_username_signin"
+        app:layout_constraintTop_toTopOf="@+id/tv_username_signin"
+        app:layout_constraintVertical_bias="0.481" />
+
+    <TextView
+        android:id="@+id/tv_password_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="PASSWORD"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/tv_username_signin"
+        app:layout_constraintTop_toBottomOf="@+id/tv_username_signin" />
+
+    <TextView
+        android:id="@+id/tv_goto_singup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="Don't have account ? Sign Up !"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Login"
+        app:layout_constraintEnd_toEndOf="@+id/edt_password_signin"
+        app:layout_constraintTop_toBottomOf="@+id/edt_password_signin" />
+</android.support.constraint.ConstraintLayout>

@@ -12,7 +12,6 @@ import com.example.hossein.taskmanager.Fragments.AddTaskFragment;
 import java.util.UUID;
 
 public class AddEditActivity extends AppCompatActivity {
-    private FrameLayout mFrameLayoutAddEdit;
     private static final String TAG_ISEDITED = "isEdited";
     private static final String TAG_UUID = "id";
 
@@ -28,7 +27,6 @@ public class AddEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit);
 
-        mFrameLayoutAddEdit = findViewById(R.id.frm_add_edit);
         Intent intent = getIntent();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
