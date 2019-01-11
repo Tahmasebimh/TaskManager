@@ -27,7 +27,7 @@ public class AlertDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        mTaskLab = TaskLab.getInstance();
+        mTaskLab = TaskLab.getInstance(getActivity());
 
         final Task task = (Task) getArguments().getSerializable("task");
 

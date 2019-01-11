@@ -18,7 +18,7 @@ public class UndoneTaskFragment extends SingleFragmentActivity {
 
     @Override
     public ArrayList<Task> getTaskArrayList() {
-        TaskLab taskLab = TaskLab.getInstance();
+        TaskLab taskLab = TaskLab.getInstance(getActivity());
         return taskLab.getUnDoneTaskList();
     }
 

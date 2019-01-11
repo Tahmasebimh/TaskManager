@@ -55,7 +55,7 @@ public class AddTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        mTaskLab = TaskLab.getInstance();
+        mTaskLab = TaskLab.getInstance(getActivity());
         View view = inflater.inflate(R.layout.fragment_add_task, container, false);
         identifyItem(view);
         bundle = getArguments();
