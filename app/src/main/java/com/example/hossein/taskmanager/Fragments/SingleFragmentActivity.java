@@ -111,7 +111,7 @@ public abstract class SingleFragmentActivity extends Fragment {
         public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int i) {
 
             taskViewHolder.mTextViewTitle.setText(mTasks.get(i).getTitle());
-            taskViewHolder.mTextViewDate.setText(mTasks.get(i).getDate());
+            taskViewHolder.mTextViewDate.setText(mTasks.get(i).getDate().toString());
             taskViewHolder.mTextViewOnImage.setText(mTasks.get(i).getTitle().substring(0,1));
             taskViewHolder.setTask(mTasks.get(i));
         }

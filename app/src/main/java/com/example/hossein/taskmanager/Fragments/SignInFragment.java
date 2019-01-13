@@ -18,6 +18,7 @@ import com.example.hossein.taskmanager.MainActivity;
 import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Account;
 import com.example.hossein.taskmanager.model.AccountLab;
+import com.example.hossein.taskmanager.model.LoginedUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +62,9 @@ public class SignInFragment extends Fragment {
                 Account account = new Account(userName , password);
                 AccountLab accountLab = AccountLab.getInstance(getActivity());
                 if(accountLab.isAccountInDatabase(account)){
+                    LoginedUser loginedUser = LoginedUser.getInstance();
+                    loginedUser.setUserName(userName);
+                    loginedUser.setPassword(password);
                     Intent intent = new Intent(getActivity() , MainActivity.class);
                     startActivity(intent);
                 }else{

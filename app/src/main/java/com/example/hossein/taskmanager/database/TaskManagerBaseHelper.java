@@ -27,9 +27,9 @@ public class TaskManagerBaseHelper extends SQLiteOpenHelper {
                 TaskDBShema.TaskTable.Cols.DATE + " ,  " +
                 TaskDBShema.TaskTable.Cols.ISDONE + " , " +
                 TaskDBShema.TaskTable.Cols.UUID + " , " +
-                TaskDBShema.TaskTable.Cols.ACCOUNTID + " REFERENCES " +
-                TaskDBShema.TaskTable.NAME + " ( " + TaskDBShema.TaskTable.Cols.ID + " ) " +
-                " ON delete cascade " + " ) "
+                TaskDBShema.TaskTable.Cols.ACCOUNTID + " , " +
+                "foreign key ( " + TaskDBShema.TaskTable.Cols.ACCOUNTID + " ) REFERENCES " +
+                TaskDBShema.AccountTable.NAME + " ( " + TaskDBShema.AccountTable.Cols.ID + " ) on delete cascade ); "
         );
     }
 

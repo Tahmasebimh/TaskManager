@@ -10,11 +10,29 @@ public class Task implements Serializable {
     private boolean done = false ;
     private boolean isEdited = false ;
     private UUID mUUID;
+    private Date mDate;
+    private int accID ;
+
+    public int getAccID() {
+        return accID;
+    }
+
+    public void setAccID(int accID) {
+        this.accID = accID;
+    }
+
+    public Task(UUID uuid) {
+        mUUID = uuid;
+        Date date = new Date();
+        mDate = date;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
+    }
 
     public Task() {
-        Date date1 = new Date();
-        this.date = date1.toString();
-        this.mUUID = UUID.randomUUID();
+        this(UUID.randomUUID());
     }
 
     public String getTitle() {
@@ -25,8 +43,8 @@ public class Task implements Serializable {
         this.title = title;
     }
 
-    public String getDate() {
-        return date;
+    public Date getDate() {
+        return mDate;
     }
 
     public String getDescryption() {
