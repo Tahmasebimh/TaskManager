@@ -55,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/main_view_pager"
             android:layout_alignBottom="@+id/main_view_pager"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_input_add" />
 

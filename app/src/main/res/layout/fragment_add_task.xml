@@ -43,6 +43,12 @@
         android:layout_margin="8dp"
         android:text="Save" />
 
+    <Button
+        android:id="@+id/btn_date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date Picker" />
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -59,7 +59,7 @@
             android:layout_marginStart="8dp"
             android:ems="10"
             android:hint="PASSWORD"
-            android:inputType="textPersonName"
+            android:inputType="textPersonName|textPassword"
             app:layout_constraintBottom_toBottomOf="@+id/tv_password_singin"
             app:layout_constraintEnd_toEndOf="@+id/edt_username_signin"
             app:layout_constraintHorizontal_bias="1.0"
