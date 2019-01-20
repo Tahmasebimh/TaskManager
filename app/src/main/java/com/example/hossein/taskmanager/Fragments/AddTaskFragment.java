@@ -61,10 +61,6 @@ public class AddTaskFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
-
-
         mTaskLab = TaskLab.getInstance(getActivity());
         View view = inflater.inflate(R.layout.fragment_add_task, container, false);
         identifyItem(view);

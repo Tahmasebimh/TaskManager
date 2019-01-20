@@ -2,6 +2,7 @@ package com.example.hossein.taskmanager.Fragments;
 
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Task;
@@ -19,6 +20,7 @@ public class UndoneTaskFragment extends SingleFragmentActivity {
     @Override
     public ArrayList<Task> getTaskArrayList() {
         TaskLab taskLab = TaskLab.getInstance(getActivity());
+        Log.i("****UndoneTask" , taskLab.getUnDoneTaskList().size() + "");
         return taskLab.getUnDoneTaskList();
     }
 

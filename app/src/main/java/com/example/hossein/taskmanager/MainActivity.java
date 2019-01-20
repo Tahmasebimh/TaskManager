@@ -9,11 +9,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.hossein.taskmanager.Fragments.AllTaskListFragment;
 import com.example.hossein.taskmanager.Fragments.DoneTaskFragment;
 import com.example.hossein.taskmanager.Fragments.UndoneTaskFragment;
+import com.example.hossein.taskmanager.model.TaskLab;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +34,19 @@ public class MainActivity extends AppCompatActivity {
         mViewPagerTask = findViewById(R.id.main_view_pager);
         mFloatingActionButtonAddTask = findViewById(R.id.fab_add_task);
 
+        setViewPagerAdapter();
+        mTabLayoutTaskMode.setupWithViewPager(mViewPagerTask);
+
+        mFloatingActionButtonAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = AddEditActivity.newIntent(MainActivity.this , false , null);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void setViewPagerAdapter() {
         mViewPagerTask.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {
@@ -65,14 +82,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        mTabLayoutTaskMode.setupWithViewPager(mViewPagerTask);
+    }
 
-        mFloatingActionButtonAddTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = AddEditActivity.newIntent(MainActivity.this , false , null);
-                startActivity(intent);
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.task_menu , menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.item_delete_all_task :{
+                TaskLab.getInstance(MainActivity.this).removeAllTask();
+                int currnetitem = mViewPagerTask.getCurrentItem();
+                setViewPagerAdapter();
+                mViewPagerTask.setCurrentItem(currnetitem);
+                return true;
+            }default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -52,7 +52,7 @@ public class TaskLab {
         contentValues.put(TaskDBShema.TaskTable.Cols.DESCRYPTION , task.getDescryption());
         contentValues.put(TaskDBShema.TaskTable.Cols.ISDONE , task.isDone() ? 1 : 0);
         contentValues.put(TaskDBShema.TaskTable.Cols.UUID , task.getUUID().toString());
-        contentValues.put(TaskDBShema.TaskTable.Cols.ACCOUNTID , LoginedUser.getInstance().getId());
+        contentValues.put(TaskDBShema.TaskTable.Cols.ACCOUNTID , LoginedUser.getInstance().getId() + "");
 
         return contentValues;
     }
@@ -80,12 +80,18 @@ public class TaskLab {
         getTasks();
     }
 
+    public void removeAllTask (){
+        mSQLiteDatabase.delete(TaskDBShema.TaskTable.NAME , TaskDBShema.TaskTable.Cols.ACCOUNTID + " = ?" ,
+                new String[]{LoginedUser.getInstance().getId() + ""});
+        getTasks();
+    }
+
     public ArrayList<Task> getTasks() {
         setLoginUserId();
         mTasks = new ArrayList<>();
-        ArrayList<Task> taskArrayList = new ArrayList<>();
-        TaskCursorWrapper taskCursorWrapper = queryTask(null ,
-                null);
+        //ArrayList<Task> taskArrayList = new ArrayList<>();
+        TaskCursorWrapper taskCursorWrapper = queryTask(TaskDBShema.TaskTable.Cols.ACCOUNTID + " = ? " ,
+                new String[]{LoginedUser.getInstance().getId() + ""});
         try {
             if(taskCursorWrapper.getCount() == 0){
                 return mTasks;
@@ -93,28 +99,24 @@ public class TaskLab {
             taskCursorWrapper.moveToFirst();
 
             while (!taskCursorWrapper.isAfterLast()){
-                taskArrayList.add(taskCursorWrapper.getTask());
+                mTasks.add(taskCursorWrapper.getTask());
                 taskCursorWrapper.moveToNext();
             }
         }finally {
             taskCursorWrapper.close();
         }
-        for(Task task : taskArrayList){
-            if(task.getAccID() == LoginedUser.getInstance().getId()){
-                mTasks.add(task);
-            }
-        }
-
         return mTasks;
     }
 
     public ArrayList<Task> getDoneTaskList() {
+
         ArrayList<Task> doneTasks = new ArrayList<>();
         for (Task task : mTasks) {
             if (task.isDone()) {
                 doneTasks.add(task);
             }
         }
+        Log.i("****doneTask" , doneTasks.size()  + "");
         return doneTasks;
     }
 
@@ -125,6 +127,7 @@ public class TaskLab {
                 unDoneTasks.add(task);
             }
         }
+        Log.i("****undoneTask" , unDoneTasks.size()  + "");
         return unDoneTasks;
     }
 
