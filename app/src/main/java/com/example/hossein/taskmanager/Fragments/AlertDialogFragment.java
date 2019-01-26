@@ -10,14 +10,17 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
+
+import java.util.UUID;
+
 public class AlertDialogFragment extends DialogFragment {
 
     private TaskLab mTaskLab;
 
-    public static AlertDialogFragment newInstance(Task task) {
+    public static AlertDialogFragment newInstance(UUID uuid) {
         
         Bundle args = new Bundle();
-        args.putSerializable("task" , task);
+        args.putSerializable("task" , uuid);
 
         AlertDialogFragment fragment = new AlertDialogFragment();
         fragment.setArguments(args);
@@ -29,7 +32,7 @@ public class AlertDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         mTaskLab = TaskLab.getInstance(getActivity());
 
-        final Task task = (Task) getArguments().getSerializable("task");
+         final Task task = mTaskLab.findWithUUID((UUID) getArguments().getSerializable("task"));
 
 
         return new AlertDialog.Builder(getActivity())

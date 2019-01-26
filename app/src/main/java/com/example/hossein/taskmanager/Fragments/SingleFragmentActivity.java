@@ -90,14 +90,14 @@ public abstract class SingleFragmentActivity extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = AddEditActivity.newIntent(getActivity() , true , mTask.getUUID());
+                    Intent intent = AddEditActivity.newIntent(getActivity() , true , mTask.getMUUID());
                     startActivity(intent);
                 }
             });
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    DialogShowTaskDetailFragment dialogShowTaskDetailFragment = DialogShowTaskDetailFragment.newInstance(mTask.getUUID());
+                    DialogShowTaskDetailFragment dialogShowTaskDetailFragment = DialogShowTaskDetailFragment.newInstance(mTask.getMUUID());
                     dialogShowTaskDetailFragment.show(getFragmentManager() , "test");
                     return false;
                 }
@@ -132,7 +132,7 @@ public abstract class SingleFragmentActivity extends Fragment {
         public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int i) {
 
             taskViewHolder.mTextViewTitle.setText(mTasks.get(i).getTitle());
-            taskViewHolder.mTextViewDate.setText(mTasks.get(i).getDate().toString());
+            //taskViewHolder.mTextViewDate.setText(mTasks.get(i).getMDate().toString());
             taskViewHolder.mTextViewOnImage.setText(mTasks.get(i).getTitle().substring(0,1));
             taskViewHolder.setTask(mTasks.get(i));
         }

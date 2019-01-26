@@ -25,8 +25,8 @@ public class TaskCursorWrapper extends CursorWrapper {
         task.setTitle(title);
         task.setDescryption(descryption);
         task.setDone(isDone == 1);
-        task.setDate(new Date(date));
-        task.setAccID(accID);
+        task.setMDate(new Date(date));
+        task.setAccID((long) accID);
 
         return task;
     }
