@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class Account {
@@ -16,19 +16,14 @@ public class Account {
 
     @Unique
     private String username ;
-
     private String password ;
+
 
 
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
-    }
 
-    public Account(String username, String password, int databaseID) {
-        this.username = username;
-        this.password = password;
-        this.id = Long.valueOf(databaseID);
     }
 
     @Generated(hash = 1711645833)
@@ -42,16 +37,8 @@ public class Account {
     public Account() {
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     public void setUsername(String username) {
@@ -59,12 +46,18 @@ public class Account {
     }
 
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public Long getId() {
+        return this.id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -15,8 +15,6 @@ import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Account;
 import com.example.hossein.taskmanager.model.AccountLab;
 
-import org.greenrobot.greendao.annotation.ToOne;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -42,22 +40,20 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(!mEditTextUserName.getText().toString().equals("") && !mEditTextPassword.getText().toString().equals("")){
+                    Toast.makeText(getActivity(), "inja", Toast.LENGTH_SHORT).show();
                     if(mEditTextPassword.getText().toString().length() >= 5){
                         String userName = mEditTextUserName.getText().toString();
                         String password = mEditTextPassword.getText().toString();
                         AccountLab accountLab = AccountLab.getInstance(getActivity());
                         try {
-                            Account account = new Account();
-                            account.setUsername(userName);
-                            account.setPassword(password);
+                            Account account = new Account(userName , password);
                             accountLab.addAccount(account);
                             FragmentManager fragmentManager = getFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.frm_layout_verify_user , new SignInFragment())
                                     .commit();
                         }catch (Exception e){
-                            Toast.makeText(getActivity(), e.getMessage() + "cant", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
-
                     }else{
                         Toast.makeText(getActivity(), "Password is too unSecure", Toast.LENGTH_SHORT).show();
                     }

@@ -83,9 +83,9 @@ public class DialogShowTaskDetailFragment extends DialogFragment {
 
                 mTask = mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid"));
                 mEditTextTitle.setText(mTask.getTitle());
-                mCheckBoxIsDone.setChecked(mTask.getDone());
+                mCheckBoxIsDone.setChecked(mTask.isDone());
                 mEditTextDesc.setText(mTask.getDescryption());
-                mButtonDatePicker.setText(mTask.getMDate().toString());
+                mButtonDatePicker.setText(mTask.getDate().toString());
         }
     }
 
@@ -112,7 +112,7 @@ public class DialogShowTaskDetailFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = AddEditActivity.newIntent(getActivity() , true , mTask.getMUUID());
+                        Intent intent = AddEditActivity.newIntent(getActivity() , true , mTask.getUUID());
                         startActivity(intent);
                     }
                 })

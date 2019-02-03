@@ -1,7 +1,5 @@
 package com.example.hossein.taskmanager.model;
 
-import android.support.annotation.IntDef;
-
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -14,33 +12,46 @@ import java.util.UUID;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
-
 @Entity
-public class Task  {
+public class Task {
 
     @Id(autoincrement = true)
     private Long id;
+
+    private String title ;
+    private String descryption;
+    private boolean done = false ;
+    private boolean isEdited = false ;
+
+
+    @Convert(columnType = String.class , converter = UUIDCinverter.class)
+    private UUID mUUID;
+
+    private Date mDate;
+
     private Long accID ;
+
     @ToOne(joinProperty = "accID")
     private Account mAccount;
 
-    private String title , descryption ;
-    private boolean done = false ;
-
-    @Convert(columnType = String.class , converter = UUIDConverter.class)
-    private UUID mUUID;
-    private Date mDate;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
+
     /** Used for active entity operations. */
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
+
     @Generated(hash = 962504994)
     private transient Long mAccount__resolvedKey;
 
+    public Long getAccID() {
+        return accID;
+    }
 
-
+    public void setAccID(Long accID) {
+        this.accID = accID;
+    }
 
     public Task(UUID uuid) {
         mUUID = uuid;
@@ -48,94 +59,102 @@ public class Task  {
         mDate = date;
     }
 
+    public void setDate(Date date) {
+        mDate = date;
+    }
 
-    @Generated(hash = 245630661)
-    public Task(Long id, Long accID, String title, String descryption, boolean done,
-            UUID mUUID, Date mDate) {
+    public Task() {
+        this(UUID.randomUUID());
+    }
+
+    @Generated(hash = 1154391591)
+    public Task(Long id, String title, String descryption, boolean done,
+            boolean isEdited, UUID mUUID, Date mDate, Long accID) {
         this.id = id;
-        this.accID = accID;
         this.title = title;
         this.descryption = descryption;
         this.done = done;
+        this.isEdited = isEdited;
         this.mUUID = mUUID;
         this.mDate = mDate;
-    }
-
-
-    @Generated(hash = 733837707)
-    public Task() {
-    }
-
-
-    public Long getId() {
-        return this.id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public Long getAccID() {
-        return this.accID;
-    }
-
-
-    public void setAccID(Long accID) {
         this.accID = accID;
     }
 
-
     public String getTitle() {
-        return this.title;
+        return title;
     }
-
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-
-    public String getDescryption() {
-        return this.descryption;
+    public Date getDate() {
+        return mDate;
     }
 
+    public String getDescryption() {
+        return descryption;
+    }
 
     public void setDescryption(String descryption) {
         this.descryption = descryption;
     }
 
-
-    public boolean getDone() {
-        return this.done;
+    public boolean isDone() {
+        return done;
     }
-
 
     public void setDone(boolean done) {
         this.done = done;
     }
 
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean edited) {
+        isEdited = edited;
+    }
+
+    public UUID getUUID() {
+        return mUUID;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean getDone() {
+        return this.done;
+    }
+
+    public boolean getIsEdited() {
+        return this.isEdited;
+    }
+
+    public void setIsEdited(boolean isEdited) {
+        this.isEdited = isEdited;
+    }
 
     public UUID getMUUID() {
         return this.mUUID;
     }
 
-
     public void setMUUID(UUID mUUID) {
         this.mUUID = mUUID;
     }
-
 
     public Date getMDate() {
         return this.mDate;
     }
 
-
     public void setMDate(Date mDate) {
         this.mDate = mDate;
     }
-
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1253912853)
@@ -156,7 +175,6 @@ public class Task  {
         return mAccount;
     }
 
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1819882386)
     public void setMAccount(Account mAccount) {
@@ -166,7 +184,6 @@ public class Task  {
             mAccount__resolvedKey = accID;
         }
     }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -180,7 +197,6 @@ public class Task  {
         myDao.delete(this);
     }
 
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -192,7 +208,6 @@ public class Task  {
         }
         myDao.refresh(this);
     }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -206,7 +221,6 @@ public class Task  {
         myDao.update(this);
     }
 
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1442741304)
     public void __setDaoSession(DaoSession daoSession) {
@@ -214,24 +228,15 @@ public class Task  {
         myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
 
-
-    public static class UUIDConverter implements PropertyConverter<UUID , String>{
-
+    public static class UUIDCinverter implements PropertyConverter<UUID , String>{
         @Override
         public UUID convertToEntityProperty(String databaseValue) {
-            if(databaseValue == null){
-                return null;
-            }
             return UUID.fromString(databaseValue);
         }
 
         @Override
         public String convertToDatabaseValue(UUID entityProperty) {
-            if(entityProperty == null){
-                return null;
-            }
             return entityProperty.toString();
         }
     }
-
 }

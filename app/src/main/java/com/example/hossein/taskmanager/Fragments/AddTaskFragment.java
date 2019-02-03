@@ -79,9 +79,9 @@ public class AddTaskFragment extends Fragment {
 
                 mTask = mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid"));
                 mEditTextTitle.setText(mTask.getTitle());
-                mCheckBoxIsDone.setChecked(mTask.getDone());
+                mCheckBoxIsDone.setChecked(mTask.isDone());
                 mEditTextDesc.setText(mTask.getDescryption());
-                mButtonDatePicker.setText(mTask.getMDate().toString());
+                mButtonDatePicker.setText(mTask.getDate().toString());
             }
         }
 
@@ -102,8 +102,8 @@ public class AddTaskFragment extends Fragment {
 
                         mTask.setDone(mCheckBoxIsDone.isChecked());
                         mTask.setDescryption(mEditTextDesc.getText().toString());
+                        mTask.setEdited(true);
                         mTask.setTitle(mEditTextTitle.getText().toString());
-                        mTask.setMDate(new Date());
                         mTaskLab.add(mTask);
                         Objects.requireNonNull(getActivity()).finish();
                     }
@@ -120,8 +120,9 @@ public class AddTaskFragment extends Fragment {
                     Task task = new Task();
                     task.setDone(mCheckBoxIsDone.isChecked());
                     task.setDescryption(mEditTextDesc.getText().toString());
+                    task.setEdited(true);
                     task.setTitle(mEditTextTitle.getText().toString());
-                    task.setMDate(mTask.getMDate());
+                    task.setDate(mTask.getDate());
                     mTaskLab.replaceTask(task, (UUID) bundle.getSerializable("uuid"));
                     getActivity().finish();
                 }
@@ -133,7 +134,7 @@ public class AddTaskFragment extends Fragment {
             public void onClick(View view) {
 
                 AlertDialogFragment alertDialogFragment = AlertDialogFragment
-                        .newInstance((UUID) bundle.getSerializable("uuid"));
+                        .newInstance(((UUID) bundle.getSerializable("uuid")));
 
                 alertDialogFragment.show(getFragmentManager() , "dialog");
             }
@@ -142,7 +143,7 @@ public class AddTaskFragment extends Fragment {
         mButtonDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(mTask.getMDate());
+                DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(mTask.getDate());
                 datePickerFragment.setTargetFragment(AddTaskFragment.this , REQ_dATE_PiCKER);
                 datePickerFragment.show(getFragmentManager() , DIALOG_TAG);
             }
@@ -158,7 +159,7 @@ public class AddTaskFragment extends Fragment {
         }
         if(requestCode == REQ_dATE_PiCKER){
             Date date1 = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mTask.setMDate(date1);
+            mTask.setDate(date1);
             mButtonDatePicker.setText(date1.toString());
         }
     }

@@ -1,13 +1,17 @@
 package com.example.hossein.taskmanager;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 
 import com.example.hossein.taskmanager.Fragments.AddTaskFragment;
+import com.example.hossein.taskmanager.model.DaoMaster;
+import com.example.hossein.taskmanager.model.DaoSession;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.util.UUID;
 
@@ -46,6 +50,32 @@ public class AddEditActivity extends AppCompatActivity {
                             .commit();
                 }
             }
+        }
+    }
+
+    public static class App extends Application {
+
+        public static App app;
+        private DaoSession daoSession;
+
+
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            MyDevHelper myDevOpenHelper = new MyDevHelper(this, "DatabaseName");
+            Database db = myDevOpenHelper.getWritableDb();
+
+            daoSession = new DaoMaster(db).newSession();
+            app = this ;
+        }
+
+        public static App getApp() {
+            return app;
+        }
+
+        public DaoSession getDaoSession() {
+            return daoSession;
         }
     }
 }

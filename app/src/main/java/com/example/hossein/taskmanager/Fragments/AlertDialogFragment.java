@@ -20,7 +20,7 @@ public class AlertDialogFragment extends DialogFragment {
     public static AlertDialogFragment newInstance(UUID uuid) {
         
         Bundle args = new Bundle();
-        args.putSerializable("task" , uuid);
+        args.putSerializable("uuid" , uuid);
 
         AlertDialogFragment fragment = new AlertDialogFragment();
         fragment.setArguments(args);
@@ -32,7 +32,7 @@ public class AlertDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         mTaskLab = TaskLab.getInstance(getActivity());
 
-         final Task task = mTaskLab.findWithUUID((UUID) getArguments().getSerializable("task"));
+        final Task task = mTaskLab.findWithUUID((UUID) getArguments().getSerializable("uuid"));
 
 
         return new AlertDialog.Builder(getActivity())

@@ -9,28 +9,25 @@ import org.greenrobot.greendao.database.Database;
 
 public class App extends Application {
 
-    private static App ourInstance;
-
-    public static App getInstance() {
-        return ourInstance;
-    }
-
-
-
-    private DaoSession mDaoSession;
+    private static DaoSession mDaoSession;
+    private static App app;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        MyDevHelper myDevOpenHelper = new MyDevHelper(this, "DatabaseName");
-        Database db = myDevOpenHelper.getWritableDb();
+        MyDevHelper myDevHelper = new MyDevHelper(this , "taskmanager-db");
+        Database database = myDevHelper.getWritableDb();
 
-        mDaoSession = new DaoMaster(db).newSession();
-        ourInstance = this ;
+        mDaoSession = new DaoMaster(database).newSession();
+        app = this ;
     }
 
-    public DaoSession getDaoSession() {
+    public static App getApp(){
+        return app;
+    }
+
+    public  DaoSession getDaoSession(){
         return mDaoSession;
     }
 }

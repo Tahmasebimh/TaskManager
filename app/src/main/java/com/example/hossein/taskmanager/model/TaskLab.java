@@ -7,8 +7,8 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+
 import com.example.hossein.taskmanager.App;
-import com.example.hossein.taskmanager.database.TaskCursorWrapper;
 import com.example.hossein.taskmanager.database.TaskDBShema;
 import com.example.hossein.taskmanager.database.TaskManagerBaseHelper;
 
@@ -21,9 +21,9 @@ public class TaskLab {
     private static TaskLab ourInstance ;
     private ArrayList<Task> mTasks;
     private Context mContext;
-
+    private DaoSession mDaoSession;
     private TaskDao mTaskDao;
-    private DaoSession mDaoSession = App.getInstance().getDaoSession();
+    private AccountDao mAccountDao;
 
     public static TaskLab getInstance(Context context) {
         if(ourInstance == null){
@@ -37,12 +37,15 @@ public class TaskLab {
         mContext = context.getApplicationContext();
         mTasks = new ArrayList<>();
         mSQLiteDatabase = new TaskManagerBaseHelper(mContext).getWritableDatabase();
-
+        mDaoSession = App.getApp().getDaoSession();
+        mTaskDao = mDaoSession.getTaskDao();
+        mAccountDao = mDaoSession.getAccountDao();
     }
 
     public void add(Task task) {
-        mTaskDao = mDaoSession.getTaskDao();
         mTasks.add(task);
+//        ContentValues contentValues = getContentValue(task);
+//        mSQLiteDatabase.insert(TaskDBShema.TaskTable.NAME , null , contentValues);
         mTaskDao.insert(task);
     }
 
@@ -51,47 +54,49 @@ public class TaskLab {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(TaskDBShema.TaskTable.Cols.TITLE , task.getTitle());
-        contentValues.put(TaskDBShema.TaskTable.Cols.DATE , task.getMDate().getTime());
+        contentValues.put(TaskDBShema.TaskTable.Cols.DATE , task.getDate().getTime());
         contentValues.put(TaskDBShema.TaskTable.Cols.DESCRYPTION , task.getDescryption());
-        contentValues.put(TaskDBShema.TaskTable.Cols.ISDONE , task.getDone() ? 1 : 0);
-        contentValues.put(TaskDBShema.TaskTable.Cols.UUID , task.getMUUID().toString());
+        contentValues.put(TaskDBShema.TaskTable.Cols.ISDONE , task.isDone() ? 1 : 0);
+        contentValues.put(TaskDBShema.TaskTable.Cols.UUID , task.getUUID().toString());
         contentValues.put(TaskDBShema.TaskTable.Cols.ACCOUNTID , LoginedUser.getInstance().getId() + "");
 
         return contentValues;
     }
 
-    /* private void setLoginUserId() {
-        String whereClause = TaskDBShema.AccountTable.Cols.USERNAME + " = ? ";
-        String[] whereArgs = new String[]{LoginedUser.getInstance().getUserName()};
-        Cursor cursor = mSQLiteDatabase.query(TaskDBShema.AccountTable.NAME , new String[]{TaskDBShema.AccountTable.Cols.ID}
-                , whereClause , whereArgs , null , null , null , null );
-        try {
-            if(cursor.getCount() == 0){
+    private void setLoginUserId() {
 
-            }
-            cursor.moveToFirst();
-            LoginedUser.getInstance().setId(cursor.getInt(cursor.getColumnIndex(TaskDBShema.AccountTable.Cols.ID)));
-
-        }finally {
-            cursor.close();
-        }
-    } */
+    }
 
     public void remove(Task task) {
+//        mSQLiteDatabase.delete(TaskDBShema.TaskTable.NAME , TaskDBShema.TaskTable.Cols.UUID + " = ? " ,
+//        new String[]{task.getUUID().toString()});
         mTaskDao.delete(task);
         getTasks();
     }
 
     public void removeAllTask (){
-        mTaskDao.deleteAll();
         getTasks();
     }
 
     public ArrayList<Task> getTasks() {
-        //setLoginUserId();
-        mTaskDao = mDaoSession.getTaskDao();
-        mTasks = (ArrayList<Task>) mTaskDao.loadAll();
-        //ArrayList<Task> taskArrayList = new ArrayList<>();
+        setLoginUserId();
+        mTasks = new ArrayList<>();
+//        //ArrayList<Task> taskArrayList = new ArrayList<>();
+//        TaskCursorWrapper taskCursorWrapper = queryTask(TaskDBShema.TaskTable.Cols.ACCOUNTID + " = ? " ,
+//                new String[]{LoginedUser.getInstance().getId() + ""});
+//        try {
+//            if(taskCursorWrapper.getCount() == 0){
+//                return mTasks;
+//            }
+//            taskCursorWrapper.moveToFirst();
+//
+//            while (!taskCursorWrapper.isAfterLast()){
+//                mTasks.add(taskCursorWrapper.getTask());
+//                taskCursorWrapper.moveToNext();
+//            }
+//        }finally {
+//            taskCursorWrapper.close();
+//        }
         return mTasks;
     }
 
@@ -99,7 +104,7 @@ public class TaskLab {
 
         ArrayList<Task> doneTasks = new ArrayList<>();
         for (Task task : mTasks) {
-            if (task.getDone()) {
+            if (task.isDone()) {
                 doneTasks.add(task);
             }
         }
@@ -110,7 +115,7 @@ public class TaskLab {
     public ArrayList<Task> getUnDoneTaskList() {
         ArrayList<Task> unDoneTasks = new ArrayList<>();
         for (Task task : mTasks) {
-            if (!task.getDone()) {
+            if (!task.isDone()) {
                 unDoneTasks.add(task);
             }
         }
@@ -121,7 +126,8 @@ public class TaskLab {
     public Task findWithUUID(UUID uuid) {
 
         for (Task task : mTasks) {
-            if (task.getMUUID().equals(uuid)) {
+            if (task.getUUID().equals(uuid)) {
+
                 return task;
             }
         }
@@ -129,15 +135,16 @@ public class TaskLab {
     }
 
     public void replaceTask(Task task, UUID uuid) {
-        mTaskDao.update(task);
+        mSQLiteDatabase.update(TaskDBShema.TaskTable.NAME , getContentValue(task) , TaskDBShema.TaskTable.Cols.UUID + " = ? " ,
+                new String[]{uuid.toString()});
         getTasks();
     }
 
-    private TaskCursorWrapper queryTask (String whereClause, String[] whereArgs){
-        Cursor cursor = mSQLiteDatabase.query(TaskDBShema.TaskTable.NAME , null , whereClause , whereArgs,
-                null , null , null, null );
-
-    return new TaskCursorWrapper(cursor);
-    }
+//    private TaskCursorWrapper queryTask (String whereClause, String[] whereArgs){
+//        Cursor cursor = mSQLiteDatabase.query(TaskDBShema.TaskTable.NAME , null , whereClause , whereArgs,
+//                null , null , null, null );
+//
+//    return new TaskCursorWrapper(cursor);
+//    }
 
 }

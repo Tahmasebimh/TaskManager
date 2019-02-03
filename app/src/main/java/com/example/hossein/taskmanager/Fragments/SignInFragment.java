@@ -62,9 +62,6 @@ public class SignInFragment extends Fragment {
                 Account account = new Account(userName , password);
                 AccountLab accountLab = AccountLab.getInstance(getActivity());
                 if(accountLab.isAccountInDatabase(account)){
-                    LoginedUser loginedUser = LoginedUser.getInstance();
-                    loginedUser.setUserName(userName);
-                    loginedUser.setPassword(password);
                     Intent intent = new Intent(getActivity() , MainActivity.class);
                     startActivity(intent);
                 }else{
@@ -72,8 +69,6 @@ public class SignInFragment extends Fragment {
                 }
             }
         });
-
-
         return view;
     }
 
