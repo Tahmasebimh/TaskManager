@@ -52,7 +52,8 @@ public class TaskLab {
     }
 
     public void removeAllTask (){
-
+        mTaskDao.queryBuilder().where(TaskDao.Properties.AccID.eq(LoginedUser.getInstance().getId())).buildDelete().executeDeleteWithoutDetachingEntities();
+        mDaoSession.clear();
         getTasks();
     }
 
