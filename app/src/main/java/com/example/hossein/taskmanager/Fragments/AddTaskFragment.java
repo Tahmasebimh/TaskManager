@@ -3,8 +3,10 @@ package com.example.hossein.taskmanager.Fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.hossein.taskmanager.R;
@@ -32,9 +35,14 @@ import java.util.UUID;
 public class AddTaskFragment extends Fragment {
 
     private static final int REQ_dATE_PiCKER = 0 ;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
     private EditText mEditTextTitle;
     private EditText mEditTextDesc;
     private Button mButtonSave;
+    private ImageView mImageView;
+    private ImageView mImageViewTaskImage;
+
     private CheckBox mCheckBoxIsDone;
     private Bundle bundle;
     private Button mButtonEdit , mButtonDelete;
@@ -76,6 +84,7 @@ public class AddTaskFragment extends Fragment {
             if (bundle.getBoolean("edited")) {
                 mButtonDelete.setVisibility(View.VISIBLE);
                 mButtonEdit.setVisibility(View.VISIBLE);
+                mImageView.setVisibility(View.VISIBLE);
                 mButtonSave.setVisibility(View.GONE);
 
                 mTask = mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid"));
@@ -89,6 +98,7 @@ public class AddTaskFragment extends Fragment {
         if(bundle == null || !bundle.getBoolean("edited")){
             mButtonDelete.setVisibility(View.GONE);
             mButtonEdit.setVisibility(View.GONE);
+            mImageView.setVisibility(View.GONE);
             mButtonSave.setVisibility(View.VISIBLE);
         }
         mButtonSave.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +160,36 @@ public class AddTaskFragment extends Fragment {
                 datePickerFragment.show(getFragmentManager() , DIALOG_TAG);
             }
         });
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT , mTask.getTitle());
+                String body = "Desc : " + mTask.getDescryption()
+                        + "\n Date is : " + mTask.getDate().toString()
+                        + "\n Done Condition : " + mTask.getDone();
+
+                shareIntent.putExtra(Intent.EXTRA_TEXT , body);
+                startActivity(Intent.createChooser(shareIntent , " Share via : "));
+            }
+        });
+
+        mImageViewTaskImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
         return view;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
     @Override
@@ -163,6 +202,10 @@ public class AddTaskFragment extends Fragment {
             Date date1 = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDate(date1);
             mButtonDatePicker.setText(date1.toString());
+        }else if(requestCode == REQUEST_IMAGE_CAPTURE){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mImageViewTaskImage.setImageBitmap(imageBitmap);
         }
     }
 
@@ -174,6 +217,8 @@ public class AddTaskFragment extends Fragment {
         mButtonEdit = view.findViewById(R.id.btn_add_edit);
         mButtonDelete = view.findViewById(R.id.btn_add_delete);
         mButtonDatePicker = view.findViewById(R.id.btn_date_picker);
+        mImageView = view.findViewById(R.id.iv_share_icon);
+        mImageViewTaskImage = view.findViewById(R.id.iv_task_image);
     }
 
 
