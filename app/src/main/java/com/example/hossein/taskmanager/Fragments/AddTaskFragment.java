@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hossein.taskmanager.R;
+import com.example.hossein.taskmanager.model.LoginedUser;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
 
@@ -99,11 +100,11 @@ public class AddTaskFragment extends Fragment {
                         Toast.makeText(getActivity(), "You must fill title field", Toast.LENGTH_SHORT).show();
                     } else {
                         //mTask = new Task();
-
                         mTask.setDone(mCheckBoxIsDone.isChecked());
                         mTask.setDescryption(mEditTextDesc.getText().toString());
                         mTask.setEdited(true);
                         mTask.setTitle(mEditTextTitle.getText().toString());
+                        mTask.setAccID(LoginedUser.getInstance().getId());
                         mTaskLab.add(mTask);
                         Objects.requireNonNull(getActivity()).finish();
                     }
@@ -123,6 +124,7 @@ public class AddTaskFragment extends Fragment {
                     task.setEdited(true);
                     task.setTitle(mEditTextTitle.getText().toString());
                     task.setDate(mTask.getDate());
+                    task.setAccID(LoginedUser.getInstance().getId());
                     mTaskLab.replaceTask(task, (UUID) bundle.getSerializable("uuid"));
                     getActivity().finish();
                 }

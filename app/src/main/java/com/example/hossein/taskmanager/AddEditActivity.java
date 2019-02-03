@@ -53,29 +53,4 @@ public class AddEditActivity extends AppCompatActivity {
         }
     }
 
-    public static class App extends Application {
-
-        public static App app;
-        private DaoSession daoSession;
-
-
-        @Override
-        public void onCreate() {
-            super.onCreate();
-
-            MyDevHelper myDevOpenHelper = new MyDevHelper(this, "DatabaseName");
-            Database db = myDevOpenHelper.getWritableDb();
-
-            daoSession = new DaoMaster(db).newSession();
-            app = this ;
-        }
-
-        public static App getApp() {
-            return app;
-        }
-
-        public DaoSession getDaoSession() {
-            return daoSession;
-        }
-    }
 }

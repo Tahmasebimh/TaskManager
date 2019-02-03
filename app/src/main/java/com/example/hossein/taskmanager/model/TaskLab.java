@@ -9,7 +9,6 @@ import android.util.Log;
 
 
 import com.example.hossein.taskmanager.App;
-import com.example.hossein.taskmanager.database.TaskDBShema;
 import com.example.hossein.taskmanager.database.TaskManagerBaseHelper;
 
 import java.util.ArrayList;
@@ -43,60 +42,29 @@ public class TaskLab {
     }
 
     public void add(Task task) {
-        mTasks.add(task);
-//        ContentValues contentValues = getContentValue(task);
-//        mSQLiteDatabase.insert(TaskDBShema.TaskTable.NAME , null , contentValues);
         mTaskDao.insert(task);
-    }
-
-    private ContentValues getContentValue(Task task) {
-        //setLoginUserId();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(TaskDBShema.TaskTable.Cols.TITLE , task.getTitle());
-        contentValues.put(TaskDBShema.TaskTable.Cols.DATE , task.getDate().getTime());
-        contentValues.put(TaskDBShema.TaskTable.Cols.DESCRYPTION , task.getDescryption());
-        contentValues.put(TaskDBShema.TaskTable.Cols.ISDONE , task.isDone() ? 1 : 0);
-        contentValues.put(TaskDBShema.TaskTable.Cols.UUID , task.getUUID().toString());
-        contentValues.put(TaskDBShema.TaskTable.Cols.ACCOUNTID , LoginedUser.getInstance().getId() + "");
-
-        return contentValues;
-    }
-
-    private void setLoginUserId() {
-
+        getTasks();
     }
 
     public void remove(Task task) {
-//        mSQLiteDatabase.delete(TaskDBShema.TaskTable.NAME , TaskDBShema.TaskTable.Cols.UUID + " = ? " ,
-//        new String[]{task.getUUID().toString()});
         mTaskDao.delete(task);
         getTasks();
     }
 
     public void removeAllTask (){
+
         getTasks();
     }
 
     public ArrayList<Task> getTasks() {
-        setLoginUserId();
         mTasks = new ArrayList<>();
-//        //ArrayList<Task> taskArrayList = new ArrayList<>();
-//        TaskCursorWrapper taskCursorWrapper = queryTask(TaskDBShema.TaskTable.Cols.ACCOUNTID + " = ? " ,
-//                new String[]{LoginedUser.getInstance().getId() + ""});
-//        try {
-//            if(taskCursorWrapper.getCount() == 0){
-//                return mTasks;
-//            }
-//            taskCursorWrapper.moveToFirst();
-//
-//            while (!taskCursorWrapper.isAfterLast()){
-//                mTasks.add(taskCursorWrapper.getTask());
-//                taskCursorWrapper.moveToNext();
-//            }
-//        }finally {
-//            taskCursorWrapper.close();
-//        }
+        ArrayList<Task> taskArrayList = (ArrayList<Task>) mTaskDao.loadAll();
+
+        for(Task task : taskArrayList){
+            if(task.getAccID().equals(LoginedUser.getInstance().getId())){
+                mTasks.add(task);
+            }
+        }
         return mTasks;
     }
 
@@ -127,7 +95,6 @@ public class TaskLab {
 
         for (Task task : mTasks) {
             if (task.getUUID().equals(uuid)) {
-
                 return task;
             }
         }
@@ -135,8 +102,13 @@ public class TaskLab {
     }
 
     public void replaceTask(Task task, UUID uuid) {
-        mSQLiteDatabase.update(TaskDBShema.TaskTable.NAME , getContentValue(task) , TaskDBShema.TaskTable.Cols.UUID + " = ? " ,
-                new String[]{uuid.toString()});
+        Task task1  = mTaskDao.queryBuilder().where(TaskDao.Properties.MUUID.eq(uuid.toString())).unique();
+        task1.setAccID(task.getAccID());
+        task1.setMDate(task.getMDate());
+        task1.setTitle(task.getTitle());
+        task1.setDescryption(task.getDescryption());
+        task1.setDone(task.getDone());
+        mTaskDao.update(task1);
         getTasks();
     }
 
