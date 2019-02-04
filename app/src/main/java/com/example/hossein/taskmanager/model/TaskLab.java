@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.hossein.taskmanager.App;
 import com.example.hossein.taskmanager.database.TaskManagerBaseHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -113,11 +114,11 @@ public class TaskLab {
         getTasks();
     }
 
-//    private TaskCursorWrapper queryTask (String whereClause, String[] whereArgs){
-//        Cursor cursor = mSQLiteDatabase.query(TaskDBShema.TaskTable.NAME , null , whereClause , whereArgs,
-//                null , null , null, null );
-//
-//    return new TaskCursorWrapper(cursor);
-//    }
+    public File getPhotoFile(Task task , int imageCounter){
+
+        File fileDir = mContext.getFilesDir();
+        return new File(fileDir , task.getTaskPhotoName(imageCounter));
+
+    }
 
 }
