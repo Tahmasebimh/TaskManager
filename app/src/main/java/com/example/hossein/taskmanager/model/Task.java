@@ -222,13 +222,6 @@ public class Task {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1442741304)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getTaskDao() : null;
-    }
-
     public static class UUIDCinverter implements PropertyConverter<UUID , String>{
         @Override
         public UUID convertToEntityProperty(String databaseValue) {
@@ -245,5 +238,12 @@ public class Task {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String photoName = "IMG_" + timeStamp + "_" +  this.getTitle() + "_" + counter + ".jpg";
         return photoName;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1442741304)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
 }
