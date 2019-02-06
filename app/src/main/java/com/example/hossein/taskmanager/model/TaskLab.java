@@ -115,10 +115,8 @@ public class TaskLab {
     }
 
     public File getPhotoFile(Task task , int imageCounter){
-
         File fileDir = mContext.getFilesDir();
         return new File(fileDir , task.getTaskPhotoName(imageCounter));
-
     }
 
 }

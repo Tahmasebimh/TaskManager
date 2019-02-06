@@ -25,7 +25,7 @@
         android:layout_height="0dp"
         android:foregroundGravity="center_vertical|center"
         android:gravity="center"
-        android:text="t"
+        tools:text="t"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintEnd_toEndOf="@+id/circleImageView"

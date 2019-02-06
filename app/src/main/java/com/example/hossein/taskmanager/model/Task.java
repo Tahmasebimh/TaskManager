@@ -1,13 +1,15 @@
 package com.example.hossein.taskmanager.model;
 
+import android.icu.text.SimpleDateFormat;
+
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
+
+
 import java.util.Date;
 import java.util.UUID;
 import org.greenrobot.greendao.annotation.Generated;
@@ -235,8 +237,8 @@ public class Task {
     }
 
     public String getTaskPhotoName(int counter){
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String photoName = "IMG_" + timeStamp + "_" +  this.getTitle() + "_" + counter + ".jpg";
+       // String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String photoName = "IMG_" +  "_" + getUUID().toString() + "_" + counter + ".jpg";
         return photoName;
     }
 

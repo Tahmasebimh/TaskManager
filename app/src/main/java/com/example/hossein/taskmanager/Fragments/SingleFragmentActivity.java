@@ -1,6 +1,7 @@
 package com.example.hossein.taskmanager.Fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +23,9 @@ import com.example.hossein.taskmanager.AddEditActivity;
 import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
+import com.example.hossein.taskmanager.utils.PictureUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -30,6 +34,7 @@ public abstract class SingleFragmentActivity extends Fragment {
 
     private RecyclerView mRecyclerView ;
     private LinearLayout mLinearLayout;
+    private File mFilePhoto ;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +92,7 @@ public abstract class SingleFragmentActivity extends Fragment {
             mTextViewOnImage = itemView.findViewById(R.id.img_text_view);
             mTextViewDate = itemView.findViewById(R.id.tv_date);
 
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -133,8 +139,19 @@ public abstract class SingleFragmentActivity extends Fragment {
 
             taskViewHolder.mTextViewTitle.setText(mTasks.get(i).getTitle());
             taskViewHolder.mTextViewDate.setText(mTasks.get(i).getDate().toString());
-            taskViewHolder.mTextViewOnImage.setText(mTasks.get(i).getTitle().substring(0,1));
             taskViewHolder.setTask(mTasks.get(i));
+            mFilePhoto = TaskLab.getInstance(getActivity()).getPhotoFile(mTasks.get(i) , 1);
+            if(mFilePhoto == null || !mFilePhoto.exists()){
+                //mImageViewTaskImage.setImageDrawable(null);
+                taskViewHolder.mTextViewOnImage.setText(mTasks.get(i).getTitle().substring(0,1));
+                Log.i(">>>>><<<<" , "not image");
+            }else{
+                Log.i(">>>>><<<<" , "set image");
+                Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , taskViewHolder.mCircleImageView.getWidth()
+                        ,taskViewHolder.mCircleImageView.getHeight() );
+                taskViewHolder.mCircleImageView.setImageBitmap(bitmap);
+            }
+
         }
 
         @Override
@@ -144,4 +161,5 @@ public abstract class SingleFragmentActivity extends Fragment {
     }
 
     public abstract int getLayout();
+
 }

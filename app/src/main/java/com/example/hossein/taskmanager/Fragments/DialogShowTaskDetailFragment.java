@@ -4,25 +4,30 @@ package com.example.hossein.taskmanager.Fragments;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.hossein.taskmanager.AddEditActivity;
 import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
+import com.example.hossein.taskmanager.utils.PictureUtils;
 
+import java.io.File;
 import java.text.BreakIterator;
 import java.util.UUID;
 
@@ -36,11 +41,13 @@ public class DialogShowTaskDetailFragment extends DialogFragment {
     private CheckBox mCheckBoxIsDone;
     private Button mButtonSave;
     private Button mButtonEdit;
+    private ImageView mImageView;
     private Button mButtonDelete;
     private Bundle bundle;
     private Task mTask;
     private TaskLab mTaskLab;
     private Button mButtonDatePicker;
+    private File mFilePhoto;
 
     public static DialogShowTaskDetailFragment newInstance(@NonNull UUID uuid) {
 
@@ -86,6 +93,16 @@ public class DialogShowTaskDetailFragment extends DialogFragment {
                 mCheckBoxIsDone.setChecked(mTask.isDone());
                 mEditTextDesc.setText(mTask.getDescryption());
                 mButtonDatePicker.setText(mTask.getDate().toString());
+                mFilePhoto = TaskLab.getInstance(getActivity()).getPhotoFile(mTask, 1);
+                if(mFilePhoto == null || !mFilePhoto.exists()){
+                //mImageViewTaskImage.setImageDrawable(null);
+
+                Log.i(">>>>><<<<" , "not image");
+                 }else{
+                Log.i(">>>>><<<<" , "set image");
+                Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , getActivity());
+                mImageView.setImageBitmap(bitmap);
+                }
         }
     }
 
@@ -97,6 +114,7 @@ public class DialogShowTaskDetailFragment extends DialogFragment {
         mButtonEdit = view.findViewById(R.id.btn_add_edit);
         mButtonDelete = view.findViewById(R.id.btn_add_delete);
         mButtonDatePicker = view.findViewById(R.id.btn_date_picker);
+        mImageView = view.findViewById(R.id.iv_task_image);
     }
 
     @NonNull

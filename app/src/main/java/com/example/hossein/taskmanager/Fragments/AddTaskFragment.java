@@ -3,13 +3,19 @@ package com.example.hossein.taskmanager.Fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +29,11 @@ import com.example.hossein.taskmanager.R;
 import com.example.hossein.taskmanager.model.LoginedUser;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
+import com.example.hossein.taskmanager.utils.PictureUtils;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -50,9 +59,24 @@ public class AddTaskFragment extends Fragment {
     private Button mButtonDatePicker ;
     private String DIALOG_TAG = "DIALOG_TAG";
     private Task mTask;
+    private File mFilePhoto ;
 
     public AddTaskFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null && getArguments().getBoolean("edited")) {
+            mTask = TaskLab.getInstance(getActivity()).findWithUUID((UUID) getArguments().getSerializable("uuid"));
+        }else{
+            mTask = new Task();
+        }
+
+        mFilePhoto = TaskLab.getInstance(getActivity()).getPhotoFile(mTask , 1);
+
     }
 
     public static AddTaskFragment newInstance(UUID uuid, boolean isEdited) {
@@ -77,7 +101,7 @@ public class AddTaskFragment extends Fragment {
 
         if (!bundle.getBoolean("edited") || bundle == null) {
             if (mEditTextTitle.getText().toString().equals("")) {
-                mTask = new Task();
+              //  mTask = new Task();
             }
         }
         if (bundle != null) {
@@ -87,7 +111,6 @@ public class AddTaskFragment extends Fragment {
                 mImageView.setVisibility(View.VISIBLE);
                 mButtonSave.setVisibility(View.GONE);
 
-                mTask = mTaskLab.findWithUUID((UUID) bundle.getSerializable("uuid"));
                 mEditTextTitle.setText(mTask.getTitle());
                 mCheckBoxIsDone.setChecked(mTask.isDone());
                 mEditTextDesc.setText(mTask.getDescryption());
@@ -97,10 +120,12 @@ public class AddTaskFragment extends Fragment {
 
         if(bundle == null || !bundle.getBoolean("edited")){
             mButtonDelete.setVisibility(View.GONE);
-            mButtonEdit.setVisibility(View.GONE);
             mImageView.setVisibility(View.GONE);
+            mButtonEdit.setVisibility(View.GONE);
+            mImageView.setVisibility(View.VISIBLE);
             mButtonSave.setVisibility(View.VISIBLE);
         }
+
         mButtonSave.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -182,15 +207,33 @@ public class AddTaskFragment extends Fragment {
                 dispatchTakePictureIntent();
             }
         });
+        updatePhotoView();
         return view;
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT , null);
+
+            Uri uri = getPhotoUri();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT , uri);
+            List<ResolveInfo> activities = getActivity().
+                    getPackageManager().queryIntentActivities(takePictureIntent ,
+                    PackageManager.MATCH_DEFAULT_ONLY);
+
+            for(ResolveInfo resolveInfo : activities){
+                getActivity().grantUriPermission(resolveInfo.activityInfo.packageName ,
+                        uri ,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+    private Uri getPhotoUri() {
+        return FileProvider.getUriForFile(getActivity() ,
+                        "com.example.hossein.taskmanager.fileprovider" ,
+                        mFilePhoto);
     }
 
     @Override
@@ -204,9 +247,10 @@ public class AddTaskFragment extends Fragment {
             mTask.setDate(date1);
             mButtonDatePicker.setText(date1.toString());
         }else if(requestCode == REQUEST_IMAGE_CAPTURE){
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageViewTaskImage.setImageBitmap(imageBitmap);
+            Uri uri = getPhotoUri();
+            getActivity().revokeUriPermission(uri , Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            updatePhotoView();
         }
     }
 
@@ -223,4 +267,15 @@ public class AddTaskFragment extends Fragment {
     }
 
 
+    private void updatePhotoView(){
+        if(mFilePhoto == null || !mFilePhoto.exists()){
+            //mImageViewTaskImage.setImageDrawable(null);
+            Log.i(">>>>><<<<" , "not image");
+        }else{
+
+            Log.i(">>>>><<<<" , "set image");
+            Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , getActivity());
+            mImageViewTaskImage.setImageBitmap(bitmap);
+        }
+    }
 }
