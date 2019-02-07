@@ -118,12 +118,14 @@ public class AddTaskFragment extends Fragment {
             if (bundle.getBoolean("edited")) {
                 if(mUri !=  null){
                     try {
-                    Bitmap bitmap =  PictureUtils.getScalledBitmap(getRealPathFromURI(mUri) , 70
-                            ,70);
-                    mImageViewTaskImage.setImageBitmap(bitmap);
+                        Bitmap bitmap =  PictureUtils.getScalledBitmap(getRealPathFromURI(mUri) , 30
+                               ,30);
+                         mImageViewTaskImage.setImageBitmap(bitmap);
+
                     }catch (Exception e){
-                    Log.e(TAG_ERROR_URI , e.getMessage());
-                }}
+                        Log.e(TAG_ERROR_URI , e.getMessage());
+                    }
+                }
 
                 mButtonDelete.setVisibility(View.VISIBLE);
                 mButtonEdit.setVisibility(View.VISIBLE);
@@ -180,7 +182,7 @@ public class AddTaskFragment extends Fragment {
                     task.setTitle(mEditTextTitle.getText().toString());
                     task.setDate(mTask.getDate());
                     task.setAccID(LoginedUser.getInstance().getId());
-                    task.setImageUri(mUri);
+                    task.setImageUri(mTask.getImageUri());
                     mTaskLab.replaceTask(task, (UUID) bundle.getSerializable("uuid"));
                     getActivity().finish();
                 }
@@ -302,6 +304,7 @@ public class AddTaskFragment extends Fragment {
             updatePhotoView();
         }else if(requestCode == PICK_IMAGE){
             mUri = data.getData();
+            mTask.setImageUri(mUri);
             Log.e(">>>>>uir<<<<" , mUri.toString());
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mUri);

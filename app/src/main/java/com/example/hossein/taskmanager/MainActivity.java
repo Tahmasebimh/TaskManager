@@ -1,9 +1,12 @@
 package com.example.hossein.taskmanager;
 
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -29,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ActivityCompat.requestPermissions(MainActivity.this , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE ,
+                    Manifest.permission.MANAGE_DOCUMENTS , Manifest.permission.WRITE_EXTERNAL_STORAGE} , 5);
+        }
 
         mTabLayoutTaskMode = findViewById(R.id.tab_layout_mode_tsak_show);
         mViewPagerTask = findViewById(R.id.main_view_pager);

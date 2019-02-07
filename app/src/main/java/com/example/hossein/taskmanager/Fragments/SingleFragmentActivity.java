@@ -1,8 +1,11 @@
 package com.example.hossein.taskmanager.Fragments;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,6 +38,7 @@ public abstract class SingleFragmentActivity extends Fragment {
     private RecyclerView mRecyclerView ;
     private LinearLayout mLinearLayout;
     private File mFilePhoto ;
+    private String TAG_BITMAP_ERROR = ">>bitmap error";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,15 +145,29 @@ public abstract class SingleFragmentActivity extends Fragment {
             taskViewHolder.mTextViewDate.setText(mTasks.get(i).getDate().toString());
             taskViewHolder.setTask(mTasks.get(i));
             mFilePhoto = TaskLab.getInstance(getActivity()).getPhotoFile(mTasks.get(i) , 1);
-            if(mFilePhoto == null || !mFilePhoto.exists()){
-                //mImageViewTaskImage.setImageDrawable(null);
-                taskViewHolder.mTextViewOnImage.setText(mTasks.get(i).getTitle().substring(0,1));
-                Log.i(">>>>><<<<" , "not image");
+//            if(mFilePhoto != null || mFilePhoto.exists()){
+//
+//                Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , 70
+//                        ,70);
+//                taskViewHolder.mCircleImageView.setImageBitmap(bitmap);
+//                Log.i("<<>><<>>" , "in try 11");
+            //}else
+                if(mTasks.get(i).getImageUri() != null){
+                Log.i("<<>><<>>" , "in try 22");
+                try {
+                    Log.i("<<>><<>>" , "in try");
+                    Bitmap bitmap =  PictureUtils.getScalledBitmap(getRealPathFromURI(mTasks.get(i).getImageUri()) , 30
+                            ,30);
+                    taskViewHolder.mCircleImageView.setImageBitmap(bitmap);
+                }catch (Exception e){
+                    Log.e(TAG_BITMAP_ERROR , e.getMessage() + "  [[[[[]]]] "+ i);
+                    Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , 30
+                            ,30);
+                    taskViewHolder.mCircleImageView.setImageBitmap(bitmap);
+                }
             }else{
-                Log.i(">>>>><<<<" , "set image");
-                Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , 70
-                        ,70);
-                taskViewHolder.mCircleImageView.setImageBitmap(bitmap);
+                taskViewHolder.mTextViewOnImage.setText(mTasks.get(i).getTitle().substring(0,1));
+                Log.i(">>>>><<<<" , "not image" + i);
             }
         }
 
@@ -161,4 +179,13 @@ public abstract class SingleFragmentActivity extends Fragment {
 
     public abstract int getLayout();
 
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj,
+                null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 }

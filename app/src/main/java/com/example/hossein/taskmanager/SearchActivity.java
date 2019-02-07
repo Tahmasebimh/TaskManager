@@ -1,6 +1,10 @@
 package com.example.hossein.taskmanager;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +23,9 @@ import android.widget.Toast;
 import com.example.hossein.taskmanager.Fragments.DialogShowTaskDetailFragment;
 import com.example.hossein.taskmanager.model.Task;
 import com.example.hossein.taskmanager.model.TaskLab;
+import com.example.hossein.taskmanager.utils.PictureUtils;
 
+import java.io.File;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -75,6 +81,7 @@ public class SearchActivity extends AppCompatActivity {
         private TextView mTextViewDate;
         private Task mTask;
         private View mView;
+        private File mFilePhoto;
 
         public SearchTaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,7 +114,24 @@ public class SearchActivity extends AppCompatActivity {
         public void bind (Task task){
             mTextViewTitle.setText(task.getTitle());
             mTextViewDate.setText(task.getDate().toString());
-            mTextViewOnImage.setText(task.getTitle().substring(0,1));
+            mFilePhoto = TaskLab.getInstance(SearchActivity.this).getPhotoFile(task , 1);
+
+            // mTextViewOnImage.setText(task.getTitle().substring(0,1));
+            if(task.getImageUri() != null){
+                Log.i("<<>><<>>" , "in try 22");
+                try {
+                    Log.i("<<>><<>>" , "in try");
+                    Bitmap bitmap =  PictureUtils.getScalledBitmap(getRealPathFromURI(task.getImageUri()) , 30
+                            ,30);
+                    mCircleImageView.setImageBitmap(bitmap);
+                }catch (Exception e){
+                    Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , 30
+                            ,30);
+                    mCircleImageView.setImageBitmap(bitmap);
+                }
+            }else{
+                mTextViewOnImage.setText(task.getTitle().substring(0,1));
+            }
         }
     }
 
@@ -137,11 +161,21 @@ public class SearchActivity extends AppCompatActivity {
             Task task = mTaskList.get(i);
             searchTaskViewHolder.setTask(task);
             searchTaskViewHolder.bind(task);
+
         }
 
         @Override
         public int getItemCount() {
             return mTaskList.size();
         }
+    }
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = SearchActivity.this.getContentResolver().query(contentUri, proj,
+                null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 }
