@@ -95,15 +95,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
-            case R.id.item_delete_all_task :{
+        switch (item.getItemId()) {
+            case R.id.item_delete_all_task: {
                 TaskLab.getInstance(MainActivity.this).removeAllTask();
                 int currnetitem = mViewPagerTask.getCurrentItem();
                 setViewPagerAdapter();
                 mViewPagerTask.setCurrentItem(currnetitem);
                 return true;
-            }default:
+            }
+            case R.id.search_icon: {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            default:
                 return super.onOptionsItemSelected(item);
         }
     }
 }
+

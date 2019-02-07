@@ -147,11 +147,10 @@ public abstract class SingleFragmentActivity extends Fragment {
                 Log.i(">>>>><<<<" , "not image");
             }else{
                 Log.i(">>>>><<<<" , "set image");
-                Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , taskViewHolder.mCircleImageView.getWidth()
-                        ,taskViewHolder.mCircleImageView.getHeight() );
+                Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , 70
+                        ,70);
                 taskViewHolder.mCircleImageView.setImageBitmap(bitmap);
             }
-
         }
 
         @Override

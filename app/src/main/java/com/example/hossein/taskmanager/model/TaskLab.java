@@ -13,6 +13,7 @@ import com.example.hossein.taskmanager.database.TaskManagerBaseHelper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class TaskLab {
@@ -119,4 +120,13 @@ public class TaskLab {
         return new File(fileDir , task.getTaskPhotoName(imageCounter));
     }
 
+    public List<Task> searchInDataBase (String model){
+        List<Task> serachResult = mTaskDao.queryBuilder().where(TaskDao.Properties.AccID.eq(LoginedUser.getInstance().getId()))
+                .whereOr(
+                TaskDao.Properties.Title.like("%" + model + "%"),
+                TaskDao.Properties.Descryption.like("%" + model + "%"))
+                .list();
+
+        return serachResult;
+    }
 }

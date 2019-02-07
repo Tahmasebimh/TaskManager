@@ -2,9 +2,11 @@ package com.example.hossein.taskmanager.Fragments;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,7 @@ import com.example.hossein.taskmanager.model.TaskLab;
 import com.example.hossein.taskmanager.utils.PictureUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -45,12 +49,14 @@ public class AddTaskFragment extends Fragment {
 
     private static final int REQ_dATE_PiCKER = 0 ;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private int PICK_IMAGE = 2;
 
     private EditText mEditTextTitle;
     private EditText mEditTextDesc;
     private Button mButtonSave;
     private ImageView mImageView;
     private ImageView mImageViewTaskImage;
+    private Uri mUri;
 
     private CheckBox mCheckBoxIsDone;
     private Bundle bundle;
@@ -60,6 +66,8 @@ public class AddTaskFragment extends Fragment {
     private String DIALOG_TAG = "DIALOG_TAG";
     private Task mTask;
     private File mFilePhoto ;
+    private final CharSequence[] items = { "Take Photo", "Choose from Library"};
+    private String TAG_ERROR_URI = ">>>>.uri error <<<<";
 
     public AddTaskFragment() {
         // Required empty public constructor
@@ -71,12 +79,14 @@ public class AddTaskFragment extends Fragment {
 
         if (getArguments() != null && getArguments().getBoolean("edited")) {
             mTask = TaskLab.getInstance(getActivity()).findWithUUID((UUID) getArguments().getSerializable("uuid"));
+            if(mTask.getImageUri() != null){
+                mUri = mTask.getImageUri();
+                mFilePhoto = new File(mUri.getPath());
+            }
         }else{
             mTask = new Task();
         }
-
         mFilePhoto = TaskLab.getInstance(getActivity()).getPhotoFile(mTask , 1);
-
     }
 
     public static AddTaskFragment newInstance(UUID uuid, boolean isEdited) {
@@ -106,10 +116,20 @@ public class AddTaskFragment extends Fragment {
         }
         if (bundle != null) {
             if (bundle.getBoolean("edited")) {
+                if(mUri !=  null){
+                    try {
+                    Bitmap bitmap =  PictureUtils.getScalledBitmap(getRealPathFromURI(mUri) , 70
+                            ,70);
+                    mImageViewTaskImage.setImageBitmap(bitmap);
+                    }catch (Exception e){
+                    Log.e(TAG_ERROR_URI , e.getMessage());
+                }}
+
                 mButtonDelete.setVisibility(View.VISIBLE);
                 mButtonEdit.setVisibility(View.VISIBLE);
                 mImageView.setVisibility(View.VISIBLE);
                 mButtonSave.setVisibility(View.GONE);
+
 
                 mEditTextTitle.setText(mTask.getTitle());
                 mCheckBoxIsDone.setChecked(mTask.isDone());
@@ -120,9 +140,8 @@ public class AddTaskFragment extends Fragment {
 
         if(bundle == null || !bundle.getBoolean("edited")){
             mButtonDelete.setVisibility(View.GONE);
-            mImageView.setVisibility(View.GONE);
             mButtonEdit.setVisibility(View.GONE);
-            mImageView.setVisibility(View.VISIBLE);
+            mImageView.setVisibility(View.GONE);
             mButtonSave.setVisibility(View.VISIBLE);
         }
 
@@ -140,6 +159,7 @@ public class AddTaskFragment extends Fragment {
                         mTask.setEdited(true);
                         mTask.setTitle(mEditTextTitle.getText().toString());
                         mTask.setAccID(LoginedUser.getInstance().getId());
+                        mTask.setImageUri(mUri);
                         mTaskLab.add(mTask);
                         Objects.requireNonNull(getActivity()).finish();
                     }
@@ -160,6 +180,7 @@ public class AddTaskFragment extends Fragment {
                     task.setTitle(mEditTextTitle.getText().toString());
                     task.setDate(mTask.getDate());
                     task.setAccID(LoginedUser.getInstance().getId());
+                    task.setImageUri(mUri);
                     mTaskLab.replaceTask(task, (UUID) bundle.getSerializable("uuid"));
                     getActivity().finish();
                 }
@@ -189,26 +210,54 @@ public class AddTaskFragment extends Fragment {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT , mTask.getTitle());
-                String body = "Desc : " + mTask.getDescryption()
-                        + "\n Date is : " + mTask.getDate().toString()
-                        + "\n Done Condition : " + mTask.getDone();
-
-                shareIntent.putExtra(Intent.EXTRA_TEXT , body);
-                startActivity(Intent.createChooser(shareIntent , " Share via : "));
+                startShareIntent();
             }
         });
 
         mImageViewTaskImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                dialog.setTitle("Choose your action : ");
+                dialog.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case 0 :{
+                                dispatchTakePictureIntent();
+                                break;
+                            }case 1:{
+                                startGalleryIntent();
+                                break;
+                            }default:
+                                dialog.dismiss();
+                        }
+                    }
+                });
+                dialog.show();
             }
         });
         updatePhotoView();
         return view;
+    }
+
+    private void startGalleryIntent() {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        //intent.setType("image/*");
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    private void startShareIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT , mTask.getTitle());
+        String body = "Desc : " + mTask.getDescryption()
+                + "\n Date is : " + mTask.getDate().toString()
+                + "\n Done Condition : " + mTask.getDone();
+
+        shareIntent.putExtra(Intent.EXTRA_TEXT , body);
+        startActivity(Intent.createChooser(shareIntent , " Share via : "));
     }
 
     private void dispatchTakePictureIntent() {
@@ -247,10 +296,20 @@ public class AddTaskFragment extends Fragment {
             mTask.setDate(date1);
             mButtonDatePicker.setText(date1.toString());
         }else if(requestCode == REQUEST_IMAGE_CAPTURE){
-            Uri uri = getPhotoUri();
-            getActivity().revokeUriPermission(uri , Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            mUri = getPhotoUri();
+            getActivity().revokeUriPermission(mUri , Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
             updatePhotoView();
+        }else if(requestCode == PICK_IMAGE){
+            mUri = data.getData();
+            Log.e(">>>>>uir<<<<" , mUri.toString());
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mUri);
+                mImageViewTaskImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+           // updatePhotoView();
         }
     }
 
@@ -274,8 +333,17 @@ public class AddTaskFragment extends Fragment {
         }else{
 
             Log.i(">>>>><<<<" , "set image");
-            Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , getActivity());
+            Bitmap bitmap = PictureUtils.getScalledBitmap(mFilePhoto.getPath() , 70 , 70);
             mImageViewTaskImage.setImageBitmap(bitmap);
         }
+    }
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj,
+                null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 }

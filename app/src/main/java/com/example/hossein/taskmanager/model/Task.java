@@ -1,6 +1,7 @@
 package com.example.hossein.taskmanager.model;
 
 import android.icu.text.SimpleDateFormat;
+import android.net.Uri;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -37,6 +38,9 @@ public class Task {
     @ToOne(joinProperty = "accID")
     private Account mAccount;
 
+    @Convert(columnType = String.class , converter = UriConverter.class)
+    private Uri imageUri ;
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -70,9 +74,9 @@ public class Task {
         this(UUID.randomUUID());
     }
 
-    @Generated(hash = 1154391591)
-    public Task(Long id, String title, String descryption, boolean done,
-            boolean isEdited, UUID mUUID, Date mDate, Long accID) {
+    @Generated(hash = 1926659340)
+    public Task(Long id, String title, String descryption, boolean done, boolean isEdited,
+            UUID mUUID, Date mDate, Long accID, Uri imageUri) {
         this.id = id;
         this.title = title;
         this.descryption = descryption;
@@ -81,6 +85,7 @@ public class Task {
         this.mUUID = mUUID;
         this.mDate = mDate;
         this.accID = accID;
+        this.imageUri = imageUri;
     }
 
     public String getTitle() {
@@ -236,10 +241,30 @@ public class Task {
         }
     }
 
+    public static class UriConverter implements PropertyConverter<Uri , String>{
+        @Override
+        public Uri convertToEntityProperty(String databaseValue) {
+            return Uri.parse(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(Uri entityProperty) {
+            return entityProperty.toString();
+        }
+    }
+
     public String getTaskPhotoName(int counter){
        // String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String photoName = "IMG_" +  "_" + getUUID().toString() + "_" + counter + ".jpg";
         return photoName;
+    }
+
+    public Uri getImageUri() {
+        return this.imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 
     /** called by internal mechanisms, do not call yourself. */
